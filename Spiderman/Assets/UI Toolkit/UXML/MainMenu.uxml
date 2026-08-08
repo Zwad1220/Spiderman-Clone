@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
->
-    
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="mainmenu-section" style="flex-grow: 1; background-color: rgb(247, 33, 33); border-top-width: 10px; border-right-width: 10px; border-bottom-width: 10px; border-left-width: 10px; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); font-size: 40px; -unity-font-style: bold;">
+        <ui:Label text="Spiderman Clone" name="title-label" style="font-size: 90px; -unity-text-align: upper-center; -unity-font-style: bold; color: rgb(255, 255, 255); position: absolute; top: 142px; left: 481px;" />
+        <ui:Button text="Play&#10;" name="play-button" style="position: absolute; height: 100px; width: 372px; top: 615px; left: 410px; background-color: rgb(255, 255, 255);" />
+        <ui:Button text="quit" name="quit-button" style="position: absolute; height: 100px; width: 372px; top: 615px; left: 1056px; background-color: rgb(255, 255, 255);" />
+    </ui:VisualElement>
 </ui:UXML>
