@@ -671,6 +671,7 @@ GameObject:
   - component: {fileID: 1396381261}
   - component: {fileID: 1396381262}
   - component: {fileID: 1396381263}
+  - component: {fileID: 1396381264}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -754,6 +755,29 @@ MonoBehaviour:
   usingShooter: 0
   easy: 0
   tutOver: 0
+--- !u!114 &1396381264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1396381260}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee6768e6285ea124db690850676ce1d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orientation: {fileID: 1928212534}
+  grounded: 0
+  groundCheck: {fileID: 1482651683}
+  groundDistance: 0.4
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  groundDrag: 3
+  freeze: 0
+  activeGrapple: 0
+  glideHeld: 0
 --- !u!1 &1482651682
 GameObject:
   m_ObjectHideFlags: 0

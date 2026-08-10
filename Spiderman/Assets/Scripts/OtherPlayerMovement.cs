@@ -46,38 +46,36 @@ public class OtherPlayerMovement : MonoBehaviour
     void OnEnable()=> controls.Player.Enable();
     void OnDisable()=> controls.Player.Disable();
 
+Vector3 cachedInputDir;
+
     void Update()
     {
-        grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-        // strategy switching lives here — decisions, not physics
-        if (grounded)
-        {
-            currentStrategy = walkStrategy;
-        }
-        
         //ToDO: Decide if it will be glide input to determine whether the player is gliding
         //ToDO: Might do state machine logic for the movement strategy basically transition with its condition
-
-    }
-
-    private void FixedUpdate()
-    {
-        if (freeze || activeGrapple) return;
+        grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
         Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
-        Vector3 inputDir = forward * move.y + right * move.x;
+        cachedInputDir = forward * move.y + right * move.x;
+
+        if (grounded) currentStrategy = walkStrategy;
+
+        if (freeze || activeGrapple) return;
 
         var ctx = new MovementContext
         {
             Rb = rb,
-            InputDirection = inputDir,
+            InputDirection = cachedInputDir,
             DeltaTime = Time.fixedDeltaTime,
             Grounded = grounded
         };
 
         currentStrategy.Move(ctx);
+    }
+
+    void FixedUpdate()
+    {
+
     }
 
     void SetVelocity() => rb.linearVelocity = velocityToSet;
