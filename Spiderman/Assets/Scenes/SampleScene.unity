@@ -778,6 +778,7 @@ MonoBehaviour:
   freeze: 0
   activeGrapple: 0
   glideHeld: 0
+  glideData: {fileID: 11400000, guid: 207421b7e6cb642469560704acace76d, type: 2}
 --- !u!1 &1482651682
 GameObject:
   m_ObjectHideFlags: 0

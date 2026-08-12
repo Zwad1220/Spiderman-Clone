@@ -1,15 +1,16 @@
+using System.Data.Common;
 using UnityEngine;
 
 public class GlideMovement : IMovementStrategy
 {
-    //Descent
-    float glideGravityScale = 0.3f;   // how strongly gravity pulls you down while gliding
-    float maxFallSpeed = 6f;          // terminal vertical speed
 
-    //forward glide
-    float glideRatio = 2.2f;          // horizontal distance gained per unit of fall (tune this — higher = flatter, faster glide)
-    float forwardAcceleration = 8f;   // how quickly horizontal speed catches up to the glide-ratio target
-    float turnRate = 90f;             // deg/sec steering responsiveness
+    // Glide variables
+    readonly GlideMovementDataSO data;
+    float glideGravityScale, maxFallSpeed ,glideRatio,forwardAcceleration,turnRate;
+
+    public GlideMovement(GlideMovementDataSO data){
+        this.data = data;
+    }
 
     public void Move(MovementContext ctx)
     {
@@ -23,22 +24,22 @@ public class GlideMovement : IMovementStrategy
         if (ctx.InputDirection.sqrMagnitude > 0.01f)
         {
             Quaternion targetRot = Quaternion.LookRotation(ctx.InputDirection.normalized, Vector3.up);
-            rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRot, turnRate * ctx.DeltaTime));
+            rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRot, data.turnRate * ctx.DeltaTime));
         }
 
         Vector3 facingForward = rb.transform.forward;
 
         // Vertical: gravity-driven descent, clamped to a terminal fall speed
-        float verticalVelocity = velocity.y + Physics.gravity.y * glideGravityScale * ctx.DeltaTime;
-        verticalVelocity = Mathf.Max(verticalVelocity, -maxFallSpeed);
+        float verticalVelocity = velocity.y + Physics.gravity.y * data.glideGravityScale * ctx.DeltaTime;
+        verticalVelocity = Mathf.Max(verticalVelocity, -data.maxFallSpeed);
 
         // Horizontal: how fast you're falling determines how fast you glide forward
         float fallSpeed = Mathf.Max(0f, -verticalVelocity);
-        float targetForwardSpeed = fallSpeed * glideRatio;
+        float targetForwardSpeed = fallSpeed * data.glideRatio;
 
         Vector3 currentHorizontal = Vector3.ProjectOnPlane(velocity, Vector3.up);
         float currentForwardSpeed = Vector3.Dot(currentHorizontal, facingForward);
-        float newForwardSpeed = Mathf.MoveTowards(currentForwardSpeed, targetForwardSpeed, forwardAcceleration * ctx.DeltaTime);
+        float newForwardSpeed = Mathf.MoveTowards(currentForwardSpeed, targetForwardSpeed, data.forwardAcceleration * ctx.DeltaTime);
 
         Vector3 horizontalVelocity = facingForward * newForwardSpeed;
 

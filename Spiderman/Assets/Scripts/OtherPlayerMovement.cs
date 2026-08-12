@@ -24,6 +24,9 @@ public class OtherPlayerMovement : MonoBehaviour
 
     Vector3 velocityToSet;
 
+    [Header("Movement Data")]
+    [SerializeField] GlideMovementDataSO glideData;
+
 
     void Awake(){
         rb = GetComponent<Rigidbody>();
@@ -32,7 +35,7 @@ public class OtherPlayerMovement : MonoBehaviour
         groundMask = LayerMask.GetMask("Ground", "Environment");
 
         walkStrategy = new WalkMovement{groundDrag = groundDrag};
-        glideStrategy = new GlideMovement();
+        glideStrategy = new GlideMovement(glideData);
         currentStrategy = walkStrategy;
 
         controls.Player.Move.performed += ctx => {
