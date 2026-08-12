@@ -14,7 +14,7 @@ public class GlideMovement : IMovementStrategy
 
     public void Move(MovementContext ctx)
     {
-        if (ctx.Grounded) return;
+        // if (ctx.Grounded) return;
 
         Rigidbody rb = ctx.Rb;
         Vector3 velocity = rb.linearVelocity;
