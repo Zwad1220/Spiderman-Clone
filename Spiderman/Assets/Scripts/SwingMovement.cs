@@ -9,7 +9,7 @@ public class SwingMovement : MonoBehaviour
     public LineRenderer lr;
     public Rigidbody rb;
     PlayerControls controls;
-    private PlayerMovement pm;
+    private OtherPlayerMovement pm;
 
     [Header("Swinging")]
     public float maxSwingDistance = 25f, detectionRadius = 25;
@@ -22,8 +22,8 @@ public class SwingMovement : MonoBehaviour
     public Transform predictionPoint;
 
     [Header("Swing Forces")]
-    public float horizontalThrustForce = 10f;
-    public float forwardThrustForce = 8f;
+    public float horizontalThrustForce = 20f;
+    public float forwardThrustForce = 20f;
     public float extendCableSpeed = 20f;
 
     //private bool activeGrapple = false;
@@ -31,7 +31,7 @@ public class SwingMovement : MonoBehaviour
     private void Awake()
     {
         controls = new PlayerControls();
-        pm = GetComponent<PlayerMovement>();
+        pm = GetComponent<OtherPlayerMovement>();
         //controls.Player.Shoot.performed += ctx => {
         //    StartSwing();
         //};
@@ -50,6 +50,7 @@ public class SwingMovement : MonoBehaviour
         CheckForSwingPoint();
         if (Input.GetKeyDown(KeyCode.Mouse0)) StartSwing();
         if (Input.GetKeyUp(KeyCode.Mouse0)) StopSwing();
+        Debug.Log($"activeGrapple: {pm.activeGrapple}, joint: {joint != null}");
         if (pm.activeGrapple) OdmGearMovement();
     }
 
@@ -139,32 +140,25 @@ public class SwingMovement : MonoBehaviour
 
     private void OdmGearMovement()
     {
-        // manual air control while swinging — pulls you toward look direction / input
+        Debug.Log($"move: {pm.move}, cam assigned: {cam != null}, rb assigned: {rb != null}");
+        //manual air control while swinging — pulls you toward look direction / input
         if (pm.move.y > 0)
             rb.AddForce(cam.forward * forwardThrustForce * Time.deltaTime);
-
         if (pm.move.x > 0)
             rb.AddForce(cam.right * horizontalThrustForce * Time.deltaTime);
         if (pm.move.x < 0)
             rb.AddForce(-cam.right * horizontalThrustForce * Time.deltaTime);
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && joint.maxDistance > 0)
         {
-            Vector3 directionToPoint = swingPoint - transform.position;
-            rb.AddForce(directionToPoint.normalized * forwardThrustForce * Time.deltaTime);
-
-            float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
-
-            joint.maxDistance = distanceFromPoint * 0.8f;
-            joint.minDistance = distanceFromPoint * 0.25f;
+            joint.maxDistance -= extendCableSpeed * Time.deltaTime;
+            joint.minDistance -= extendCableSpeed * Time.deltaTime;
         }
         // extend cable
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) && joint.maxDistance < maxSwingDistance)
         {
-            float extendedDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendCableSpeed;
-
-            joint.maxDistance = extendedDistanceFromPoint * 0.8f;
-            joint.minDistance = extendedDistanceFromPoint * 0.25f;
+            joint.maxDistance += extendCableSpeed * Time.deltaTime;
+            joint.minDistance += extendCableSpeed * Time.deltaTime;
         }
     }
 

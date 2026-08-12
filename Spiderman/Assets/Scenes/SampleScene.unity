@@ -968,11 +968,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  freeze: 0
   activeGrapple: 0
   swinging: 0
   usingShooter: 0
-  easy: 0
   tutOver: 0
 --- !u!114 &1396381264
 MonoBehaviour:
@@ -987,6 +985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orientation: {fileID: 1928212534}
+  move: {x: 0, y: 0}
   grounded: 0
   groundCheck: {fileID: 1482651683}
   groundDistance: 0.4
@@ -1090,7 +1089,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
@@ -1117,7 +1116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1651483243}
-  gunTip: {fileID: 726344129}
+  gunTip: {fileID: 1396381261}
   whatIsGrappleable:
     serializedVersion: 2
     m_Bits: 128

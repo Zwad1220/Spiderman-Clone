@@ -27,13 +27,9 @@ public class PlayerMovement : MonoBehaviour
     public float groundDistance;
     public LayerMask groundMask;
 
-    Vector3 velocity;
-
-    public bool freeze;
     public bool activeGrapple;
     public bool swinging;
     public bool usingShooter;
-    public bool easy;
 
     private Vector3 velocityToSet;
 
@@ -51,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         controls = new PlayerControls();
 
         controls.Player.Move.performed += ctx => {
-            if (!freeze && !activeGrapple)
+            if (!activeGrapple)
             {
                 move = ctx.ReadValue<Vector2>();
             }
@@ -76,11 +72,6 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         Debug.Log(move);
-        if (freeze)
-        {
-            speed = 0;
-        }
-        else { speed = 12; }
         grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         // handle drag
         if (grounded && !activeGrapple)
@@ -94,17 +85,17 @@ public class PlayerMovement : MonoBehaviour
             speed = 8;
         }
 
-        Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-        Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
+        //Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
+        //Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
 
-        Vector3 moveDir = forward * move.y + right * move.x;
-        rb.AddForce(moveDir * speed, ForceMode.Force);
-        
+        //Vector3 moveDir = forward * move.y + right * move.x;
+        //rb.AddForce(moveDir * speed, ForceMode.Force);
+
         if (!activeGrapple)
         {
-            forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-            right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
-            moveDir = forward * move.y + right * move.x;
+            Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
+            Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
+            Vector3 moveDir = forward * move.y + right * move.x;
             rb.AddForce(moveDir * speed, ForceMode.Force);
         }
 
