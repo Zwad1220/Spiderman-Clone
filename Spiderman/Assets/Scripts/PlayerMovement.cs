@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform orientation;
 
     PlayerControls controls;
-    Vector2 move;
+    public Vector2 move;
     private Rigidbody rb;
     public float playerHeight;
     public float groundDrag;
@@ -36,9 +36,6 @@ public class PlayerMovement : MonoBehaviour
     public bool easy;
 
     private Vector3 velocityToSet;
-    //private Grappling grappling;
-    //private Shooting shooting;
-    //private Swinging swing;
 
 
     public bool tutOver;
@@ -50,8 +47,6 @@ public class PlayerMovement : MonoBehaviour
         usingShooter = false;
 
         //swing = GetComponent<Swinging>();
-        //grappling = GetComponent<Grappling>();
-        //shooting = GetComponent<Shooting>();
         rb = GetComponent<Rigidbody>();
         controls = new PlayerControls();
 
@@ -62,30 +57,8 @@ public class PlayerMovement : MonoBehaviour
             }
         };
 
-        controls.Player.Interact.performed += ctx =>
-        {
-        };
 
-        controls.Player.Move.canceled += ctx => move = Vector2.zero;
-
-        //controls.Player.Shoot.performed += ctx =>
-        //{
-        //    if (!grounded && !usingShooter)
-        //    {
-        //        shootingGun.SetActive(true);
-        //        grappleGun.SetActive(false);
-        //        grappleGun2.SetActive(false);
-        //        usingShooter = true;
-        //        if (swinging) swing.stopSwing();
-        //    }
-        //    else if (usingShooter)
-        //    {
-        //        grappleGun.SetActive(true);
-        //        grappleGun2.SetActive(true);
-        //        shootingGun.SetActive(false);
-        //        usingShooter = false;
-        //    }
-        //};
+        controls.Player.Move.canceled += ctx => { if (!activeGrapple) move = Vector2.zero; };
 
         groundMask = LayerMask.GetMask("Ground", "Environment");
     }
@@ -102,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
-        
+        Debug.Log(move);
         if (freeze)
         {
             speed = 0;
@@ -126,6 +99,14 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 moveDir = forward * move.y + right * move.x;
         rb.AddForce(moveDir * speed, ForceMode.Force);
+        
+        if (!activeGrapple)
+        {
+            forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
+            right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
+            moveDir = forward * move.y + right * move.x;
+            rb.AddForce(moveDir * speed, ForceMode.Force);
+        }
 
         /*Vector3 moveDir = transform.right * move.x + transform.forward * move.y;
         rb.AddForce(moveDir.normalized * speed , ForceMode.Force);*/
