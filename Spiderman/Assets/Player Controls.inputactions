@@ -1,5 +1,4 @@
 {
-    "version": 1,
     "name": "Player Controls",
     "maps": [
         {
@@ -55,6 +54,15 @@
                     "name": "Dash",
                     "type": "Button",
                     "id": "527fb444-04bf-4e8b-8724-7e6894f2d781",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Glide",
+                    "type": "Button",
+                    "id": "df14b760-b6e7-48aa-8f6e-fe16e749f268",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -224,6 +232,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b31abe90-8a33-4b20-8bad-ec83b34f3aa2",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Glide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

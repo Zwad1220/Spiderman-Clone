@@ -1,33 +1,47 @@
-using System;
 using UnityEngine;
 
 public class GlideMovement : IMovementStrategy
 {
-    float glideGravityScale = 0.25f;
-    float dragCoefficient = 0.02f;
-    float liftCoefficient = 0.15f;
-    float bankTurnRate = 60f; // degrees/sec at full input
+    //Descent
+    float glideGravityScale = 0.3f;   // how strongly gravity pulls you down while gliding
+    float maxFallSpeed = 6f;          // terminal vertical speed
 
-    public void Move(MovementContext ctx){
-        Vector3 velocity = ctx.Rb.linearVelocity;
+    //forward glide
+    float glideRatio = 2.2f;          // horizontal distance gained per unit of fall (tune this — higher = flatter, faster glide)
+    float forwardAcceleration = 8f;   // how quickly horizontal speed catches up to the glide-ratio target
+    float turnRate = 90f;             // deg/sec steering responsiveness
 
-        // reducted gravity while gliding
-        Vector3 gravity = Physics.gravity * glideGravityScale;
+    public void Move(MovementContext ctx)
+    {
+        if (ctx.Grounded) return;
 
-        //drag oppose current velocity
-        var drag = -velocity.normalized * velocity.sqrMagnitude * dragCoefficient;
+        Rigidbody rb = ctx.Rb;
+        Vector3 velocity = rb.linearVelocity;
 
-        // lift acts opposite gravity, proportional to forward speed
-        float forwardSpeed = Vector3.Dot(velocity, ctx.Rb.transform.forward);
-        Vector3 lift = Vector3.up * Mathf.Max(0, forwardSpeed) * liftCoefficient;
-
-        ctx.Rb.AddForce(gravity + drag + lift, ForceMode.Acceleration);
-
-        // banking: rotate the body towards input direction, force follows facing   
-        if(ctx.InputDirection.sqrMagnitude > .01f){
-            Quaternion targetRot = Quaternion.LookRotation(
-                Vector3.ProjectOnPlane(ctx.InputDirection, velocity.normalized), velocity.normalized);
-            ctx.Rb.MoveRotation(Quaternion.RotateTowards(ctx.Rb.rotation, targetRot, bankTurnRate * ctx.DeltaTime));
+        // Steer facing directly from input, independent of current velocity —
+        // this avoids the LookRotation(up = velocity) issue entirely.
+        if (ctx.InputDirection.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(ctx.InputDirection.normalized, Vector3.up);
+            rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRot, turnRate * ctx.DeltaTime));
         }
+
+        Vector3 facingForward = rb.transform.forward;
+
+        // Vertical: gravity-driven descent, clamped to a terminal fall speed
+        float verticalVelocity = velocity.y + Physics.gravity.y * glideGravityScale * ctx.DeltaTime;
+        verticalVelocity = Mathf.Max(verticalVelocity, -maxFallSpeed);
+
+        // Horizontal: how fast you're falling determines how fast you glide forward
+        float fallSpeed = Mathf.Max(0f, -verticalVelocity);
+        float targetForwardSpeed = fallSpeed * glideRatio;
+
+        Vector3 currentHorizontal = Vector3.ProjectOnPlane(velocity, Vector3.up);
+        float currentForwardSpeed = Vector3.Dot(currentHorizontal, facingForward);
+        float newForwardSpeed = Mathf.MoveTowards(currentForwardSpeed, targetForwardSpeed, forwardAcceleration * ctx.DeltaTime);
+
+        Vector3 horizontalVelocity = facingForward * newForwardSpeed;
+
+        rb.linearVelocity = new Vector3(horizontalVelocity.x, verticalVelocity, horizontalVelocity.z);
     }
 }

@@ -38,7 +38,10 @@ public class OtherPlayerMovement : MonoBehaviour
         controls.Player.Move.performed += ctx => {
             if (!freeze && !activeGrapple) move = ctx.ReadValue<Vector2>();
         };
+
         controls.Player.Move.canceled += ctx => move = Vector2.zero;
+        controls.Player.Glide.performed += ctx => glideHeld = true;
+        controls.Player.Glide.canceled += ctx => glideHeld = false;
     }
 
         
@@ -59,6 +62,7 @@ Vector3 cachedInputDir;
         cachedInputDir = forward * move.y + right * move.x;
 
         if (grounded) currentStrategy = walkStrategy;
+        else if (glideHeld) currentStrategy = glideStrategy;
 
         if (freeze || activeGrapple) return;
 
@@ -71,11 +75,6 @@ Vector3 cachedInputDir;
         };
 
         currentStrategy.Move(ctx);
-    }
-
-    void FixedUpdate()
-    {
-
     }
 
     void SetVelocity() => rb.linearVelocity = velocityToSet;
