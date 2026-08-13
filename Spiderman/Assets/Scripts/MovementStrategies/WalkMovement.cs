@@ -4,7 +4,7 @@ public class WalkMovement : IMovementStrategy
 {
     public float groundDrag;
     public float groundSpeed = 16f;
-    public float airSpeed = 8f;
+    public float airSpeed = 3f;
 
     public void Move(MovementContext ctx){
         // if (!ctx.Grounded) return;

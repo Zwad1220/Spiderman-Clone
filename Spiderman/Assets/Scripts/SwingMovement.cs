@@ -22,23 +22,15 @@ public class SwingMovement : MonoBehaviour
     public Transform predictionPoint;
 
     [Header("Swing Forces")]
-    public float horizontalThrustForce = 20f;
-    public float forwardThrustForce = 20f;
+    public float horizontalThrustForce = 10f;
+    public float forwardThrustForce = 8f;
     public float extendCableSpeed = 20f;
 
-    //private bool activeGrapple = false;
 
     private void Awake()
     {
         controls = new PlayerControls();
         pm = GetComponent<OtherPlayerMovement>();
-        //controls.Player.Shoot.performed += ctx => {
-        //    StartSwing();
-        //};
-        //controls.Player.Shoot.canceled += ctx =>
-        //{
-        //    StopSwing();
-        //};
         controls.Player.Jump.performed += ctx =>
         {
             
@@ -140,15 +132,7 @@ public class SwingMovement : MonoBehaviour
 
     private void OdmGearMovement()
     {
-        Debug.Log($"move: {pm.move}, cam assigned: {cam != null}, rb assigned: {rb != null}");
-        //manual air control while swinging — pulls you toward look direction / input
-        if (pm.move.y > 0)
-            rb.AddForce(cam.forward * forwardThrustForce * Time.deltaTime);
-        if (pm.move.x > 0)
-            rb.AddForce(cam.right * horizontalThrustForce * Time.deltaTime);
-        if (pm.move.x < 0)
-            rb.AddForce(-cam.right * horizontalThrustForce * Time.deltaTime);
-
+        
         if (Input.GetKey(KeyCode.Space) && joint.maxDistance > 0)
         {
             joint.maxDistance -= extendCableSpeed * Time.deltaTime;
