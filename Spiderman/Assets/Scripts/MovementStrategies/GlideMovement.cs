@@ -6,8 +6,6 @@ public class GlideMovement : IMovementStrategy
 
     // Glide variables
     readonly GlideMovementDataSO data;
-    float glideGravityScale, maxFallSpeed ,glideRatio,forwardAcceleration,turnRate;
-
     public GlideMovement(GlideMovementDataSO data){
         this.data = data;
     }

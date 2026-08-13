@@ -1,4 +1,5 @@
 
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class OtherPlayerMovement : MonoBehaviour
@@ -17,15 +18,21 @@ public class OtherPlayerMovement : MonoBehaviour
     public bool freeze;
     public bool activeGrapple;
     public bool glideHeld;  
+    public bool viableWallCrawling;
+    bool touchingWall, wallHeld;
+
 
     IMovementStrategy walkStrategy;
     IMovementStrategy glideStrategy;
     IMovementStrategy currentStrategy;
+    IMovementStrategy wallCrawlStrategy;
 
     Vector3 velocityToSet;
 
     [Header("Movement Data")]
     [SerializeField] GlideMovementDataSO glideData;
+    [SerializeField] WallCrawlMovementDataSO wallCrawlData;
+
 
 
     void Awake(){
@@ -36,6 +43,7 @@ public class OtherPlayerMovement : MonoBehaviour
 
         walkStrategy = new WalkMovement{groundDrag = groundDrag};
         glideStrategy = new GlideMovement(glideData);
+        wallCrawlStrategy = new VerticalMovementStrategy(wallCrawlData);
         currentStrategy = walkStrategy;
 
         controls.Player.Move.performed += ctx => {
@@ -103,5 +111,6 @@ Vector3 cachedInputDir;
 
         return velocityXZ + velocityY;
     }
+
 
 }

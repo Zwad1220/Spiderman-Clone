@@ -153,6 +153,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Climb"",
+                    ""type"": ""Button"",
+                    ""id"": ""9cf406de-ae20-48e9-872e-bc4341c3c96f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -331,6 +340,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Glide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ca1a09d-2c09-4683-9805-1c9032b34a3b"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Climb"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -346,6 +366,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_Glide = m_Player.FindAction("Glide", throwIfNotFound: true);
+        m_Player_Climb = m_Player.FindAction("Climb", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -433,6 +454,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_Glide;
+    private readonly InputAction m_Player_Climb;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -472,6 +494,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Glide".
         /// </summary>
         public InputAction @Glide => m_Wrapper.m_Player_Glide;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Climb".
+        /// </summary>
+        public InputAction @Climb => m_Wrapper.m_Player_Climb;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -519,6 +545,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Glide.started += instance.OnGlide;
             @Glide.performed += instance.OnGlide;
             @Glide.canceled += instance.OnGlide;
+            @Climb.started += instance.OnClimb;
+            @Climb.performed += instance.OnClimb;
+            @Climb.canceled += instance.OnClimb;
         }
 
         /// <summary>
@@ -551,6 +580,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Glide.started -= instance.OnGlide;
             @Glide.performed -= instance.OnGlide;
             @Glide.canceled -= instance.OnGlide;
+            @Climb.started -= instance.OnClimb;
+            @Climb.performed -= instance.OnClimb;
+            @Climb.canceled -= instance.OnClimb;
         }
 
         /// <summary>
@@ -640,5 +672,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnGlide(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Climb" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnClimb(InputAction.CallbackContext context);
     }
 }
