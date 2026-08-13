@@ -42,7 +42,7 @@ public class SwingMovement : MonoBehaviour
         CheckForSwingPoint();
         if (Input.GetKeyDown(KeyCode.Mouse0)) StartSwing();
         if (Input.GetKeyUp(KeyCode.Mouse0)) StopSwing();
-        Debug.Log($"activeGrapple: {pm.activeGrapple}, joint: {joint != null}");
+        // Debug.Log($"activeGrapple: {pm.activeGrapple}, joint: {joint != null}");
         if (pm.activeGrapple) OdmGearMovement();
     }
 

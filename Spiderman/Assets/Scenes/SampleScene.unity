@@ -780,7 +780,7 @@ GameObject:
   - component: {fileID: 1320676761}
   - component: {fileID: 1320676760}
   - component: {fileID: 1320676759}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: VerticalWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1100,11 +1100,13 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 256
   groundDrag: 3
   freeze: 0
   activeGrapple: 0
   glideHeld: 0
-  wallHeld: 0
   glideData: {fileID: 11400000, guid: 207421b7e6cb642469560704acace76d, type: 2}
   wallCrawlData: {fileID: 11400000, guid: c16a44194ad57654c8e219b2b9b0e1d2, type: 2}
 --- !u!120 &1396381265

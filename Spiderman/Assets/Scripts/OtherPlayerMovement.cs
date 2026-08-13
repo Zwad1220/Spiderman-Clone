@@ -13,6 +13,7 @@ public class OtherPlayerMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance;
     public LayerMask groundMask;
+    public LayerMask wallMask;
     public float groundDrag;
 
     public bool freeze;
@@ -55,8 +56,8 @@ public class OtherPlayerMovement : MonoBehaviour
         controls.Player.Move.canceled += ctx => move = Vector2.zero;
         controls.Player.Glide.performed += ctx => glideHeld = true;
         controls.Player.Glide.canceled += ctx => glideHeld = false;
-        controls.Player.Climb.performed += ctx => wallHeld = true;
-        controls.Player.Climb.canceled += ctx => wallHeld = false;
+        controls.Player.Jump.performed += ctx => wallHeld = true;
+        controls.Player.Jump.canceled += ctx => wallHeld = false;
 
     }
 
@@ -73,20 +74,25 @@ Vector3 cachedInputDir;
         //ToDO: Might do state machine logic for the movement strategy basically transition with its condition
         grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-            Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-            Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
-            cachedInputDir = forward * move.y + right * move.x;
+        Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
+        Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
+        cachedInputDir = forward * move.y + right * move.x;
 
-        if (grounded || activeGrapple) currentStrategy = walkStrategy;
-        else if (!activeGrapple && viableWallCrawling) currentStrategy = wallCrawlStrategy;
-        else if (!activeGrapple && glideHeld) currentStrategy = glideStrategy;
+        Debug.Log($"grounded:{grounded} activeGrapple:{activeGrapple} touchingWall:{touchingWall} wallHeld:{wallHeld}");
+
+        if (activeGrapple) currentStrategy = walkStrategy;
+        else if (viableWallCrawling) currentStrategy = wallCrawlStrategy;
+        else if (grounded) currentStrategy = walkStrategy;
+        else if (glideHeld) currentStrategy = glideStrategy;
 
         var ctx = new MovementContext
         {
             Rb = rb,
             InputDirection = cachedInputDir,
             DeltaTime = Time.fixedDeltaTime,
-            Grounded = grounded
+            Grounded = grounded,
+            TouchingWall = touchingWall,
+            WallNormal = wallNormal
         };
 
         currentStrategy.Move(ctx);
@@ -115,5 +121,22 @@ Vector3 cachedInputDir;
         return velocityXZ + velocityY;
     }
 
+
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & wallMask) == 0) return;
+
+        touchingWall = true;
+        wallNormal = collision.GetContact(0).normal;
+        Debug.Log($"Touching Wall: {touchingWall} ");
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & wallMask) == 0) return;
+        touchingWall = false;
+        Debug.Log($"Touching Wall: {touchingWall} ");
+    }
 
 }
