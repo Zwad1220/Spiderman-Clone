@@ -61,17 +61,14 @@ Vector3 cachedInputDir;
         //ToDO: Might do state machine logic for the movement strategy basically transition with its condition
         grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        // if (!activeGrapple)
-        // {
-        //     Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
-        //     Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
-        //     cachedInputDir = forward * move.y + right * move.x;
-        // }
+            Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
+            Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
+            cachedInputDir = forward * move.y + right * move.x;
 
-        // if (grounded) currentStrategy = walkStrategy;
-        // else if (glideHeld) currentStrategy = glideStrategy;
+        if (grounded || activeGrapple) currentStrategy = walkStrategy;
+        else if (!activeGrapple && glideHeld) currentStrategy = glideStrategy;
 
-        // if (freeze || activeGrapple) return;
+        if (!grounded && !activeGrapple && !glideHeld) return;
 
         var ctx = new MovementContext
         {
