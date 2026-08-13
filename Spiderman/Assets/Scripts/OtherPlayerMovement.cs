@@ -18,7 +18,7 @@ public class OtherPlayerMovement : MonoBehaviour
     public bool freeze;
     public bool activeGrapple;
     public bool glideHeld;  
-    public bool viableWallCrawling;
+    public bool viableWallCrawling => touchingWall && wallHeld ;
     bool touchingWall, wallHeld;
 
 
@@ -28,6 +28,7 @@ public class OtherPlayerMovement : MonoBehaviour
     IMovementStrategy wallCrawlStrategy;
 
     Vector3 velocityToSet;
+    Vector3 wallNormal;
 
     [Header("Movement Data")]
     [SerializeField] GlideMovementDataSO glideData;
@@ -54,6 +55,9 @@ public class OtherPlayerMovement : MonoBehaviour
         controls.Player.Move.canceled += ctx => move = Vector2.zero;
         controls.Player.Glide.performed += ctx => glideHeld = true;
         controls.Player.Glide.canceled += ctx => glideHeld = false;
+        controls.Player.Climb.performed += ctx => wallHeld = true;
+        controls.Player.Climb.canceled += ctx => wallHeld = false;
+
     }
 
         
@@ -74,9 +78,8 @@ Vector3 cachedInputDir;
             cachedInputDir = forward * move.y + right * move.x;
 
         if (grounded || activeGrapple) currentStrategy = walkStrategy;
+        else if (!activeGrapple && viableWallCrawling) currentStrategy = wallCrawlStrategy;
         else if (!activeGrapple && glideHeld) currentStrategy = glideStrategy;
-
-        if (!grounded && !activeGrapple && !glideHeld) return;
 
         var ctx = new MovementContext
         {
