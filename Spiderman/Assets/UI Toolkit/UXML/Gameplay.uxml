@@ -1,7 +1,5 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:ProgressBar value="22" title="my-progress" name="course-progressBar" />
+    <Style src="project://database/Assets/UI%20Toolkit/USS/GameplayStyleSheet.uss?fileID=7433441132597879392&amp;guid=a1c569936ee244048b4b32de8d87f048&amp;type=3#GameplayStyleSheet" />
+    <ui:ProgressBar value="22" title="my-progress" name="course-progress-bar" />
     <ui:Label text="00:00&#10;" name="timer-label" style="-unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-align: upper-center; font-size: 50px;" />
-    <ui:VisualElement name="anchorIndicator-container" style="flex-grow: 1; position: absolute; height: 135px; width: 142px; top: 281px; left: 133px; background-color: rgba(243, 243, 243, 0); background-image: url(&quot;project://database/Assets/Sprites/rhombus.png?fileID=21300000&amp;guid=a2e3fe23ba27f664eb6dca42e60bbe8b&amp;type=3#rhombus&quot;);">
-        <ui:VisualElement name="achorIndicatior-status-icon" style="flex-grow: 0; background-color: rgba(249, 249, 249, 0); width: 70px; height: 67px; flex-shrink: 1; right: 35px; top: 32px; position: absolute; background-image: url(&quot;project://database/Assets/Sprites/rhombus%20(1).png?fileID=2800000&amp;guid=efec9b523619e104f942934efc92dc32&amp;type=3#rhombus (1)&quot;); -unity-background-image-tint-color: rgb(255, 255, 255);" />
-    </ui:VisualElement>
 </ui:UXML>

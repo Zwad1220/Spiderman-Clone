@@ -1,0 +1,5 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="anchorIndicator-container" style="flex-grow: 0; position: absolute; height: 83px; width: 92px; top: 295px; left: 141px; background-color: rgba(243, 243, 243, 0); background-image: url(&quot;project://database/Assets/Sprites/rhombus.png?fileID=21300000&amp;guid=a2e3fe23ba27f664eb6dca42e60bbe8b&amp;type=3#rhombus&quot;); flex-shrink: 0;">
+        <ui:VisualElement name="achorIndicatior-status-icon" class="comfirmed" style="flex-grow: 0; background-color: rgb(249, 249, 249); width: 28px; height: 30px; flex-shrink: 1; right: 32px; top: 28px; position: absolute; background-image: none; -unity-background-image-tint-color: rgb(255, 255, 255); border-top-left-radius: 51px; border-top-right-radius: 51px; border-bottom-right-radius: 51px; border-bottom-left-radius: 51px;" />
+    </ui:VisualElement>
+</ui:UXML>
