@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
@@ -16,10 +17,10 @@ public class Checkpoint : MonoBehaviour
         checkpointRenderer = checkPoint.GetComponent<Renderer>();
         checkpointMaterial = checkpointRenderer.material;
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("working");
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.name == "Checkpoint")
         {
             text.SetActive(true);
 
@@ -31,7 +32,7 @@ public class Checkpoint : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
 
-        float fadeDuration = 1f;
+        /*float fadeDuration = 1f;
         float elapsedTime = 0f;
 
         Color originalColor = checkpointMaterial.color;
@@ -48,7 +49,7 @@ public class Checkpoint : MonoBehaviour
             checkpointMaterial.color = newColor;
 
             yield return null;
-        }
+        }*/
 
         checkPoint.SetActive(false);
     }

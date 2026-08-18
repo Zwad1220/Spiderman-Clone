@@ -865,9 +865,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 751878466}
+  - component: {fileID: 751878467}
   m_Layer: 0
   m_Name: Checkpoint
-  m_TagString: Untagged
+  m_TagString: Checkpoint
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -888,6 +889,27 @@ Transform:
   - {fileID: 1360035689}
   m_Father: {fileID: 1199300954}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &751878467
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751878465}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5
+  m_Center: {x: 0, y: 4, z: 0}
 --- !u!1 &754458800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1911,12 +1933,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1396381261}
   - component: {fileID: 1396381262}
-  - component: {fileID: 1396381268}
   - component: {fileID: 1396381263}
   - component: {fileID: 1396381264}
   - component: {fileID: 1396381266}
   - component: {fileID: 1396381265}
   - component: {fileID: 1396381267}
+  - component: {fileID: 1396381268}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2174,29 +2196,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   respawn: {fileID: 250788742}
---- !u!136 &1396381268
-CapsuleCollider:
+--- !u!114 &1396381268
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1396381260}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 142.20639, y: -62.923386, z: 10.0912895}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a06bc01a4ee889d40868a2f28595af9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 1433737474}
+  checkPoint: {fileID: 1360035688}
 --- !u!1 &1433737474
 GameObject:
   m_ObjectHideFlags: 0
@@ -3128,8 +3141,6 @@ GameObject:
   - component: {fileID: 1909469799}
   - component: {fileID: 1909469802}
   - component: {fileID: 1909469801}
-  - component: {fileID: 1909469804}
-  - component: {fileID: 1909469803}
   m_Layer: 0
   m_Name: MainGlow
   m_TagString: Untagged
@@ -3147,7 +3158,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.000015258789, y: 3.0199962, z: 0}
-  m_LocalScale: {x: 7, y: 5, z: 7}
+  m_LocalScale: {x: 7.5, y: 5, z: 7.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1360035689}
@@ -3205,43 +3216,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909469798}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1909469803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1909469798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a06bc01a4ee889d40868a2f28595af9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 1433737474}
-  checkPoint: {fileID: 1360035688}
---- !u!136 &1909469804
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1909469798}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000001013279, y: 0, z: 0.00000062584877}
 --- !u!1 &1910989185 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6362959603061581068, guid: dd61015932b5ec443b31b4234fbd2bfa, type: 3}
