@@ -4,53 +4,56 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject text;
-    [SerializeField]
-    private GameObject checkPoint;
+    [Header("Text")]
+    public GameObject textClimb;
+    public GameObject textGlide;
+    public GameObject textSwing;
+    public GameObject textComplete;
 
-    private Renderer checkpointRenderer;
-    private Material checkpointMaterial;
+    [Header("Objects to disable")]
+    public GameObject climb;
+    public GameObject glide;
+    public GameObject swing;
+    public GameObject complete;
 
-    private void Start()
+    private void OnTriggerEnter(Collider collision)
     {
-        checkpointRenderer = checkPoint.GetComponent<Renderer>();
-        checkpointMaterial = checkpointRenderer.material;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "Checkpoint")
+        if (collision.gameObject.name == "Checkpoint Climb")
         {
-            text.SetActive(true);
+            climb.SetActive(false);
+            textClimb.SetActive(true);
 
-            StartCoroutine(DisableCheckPoint());
+            StartCoroutine(DisableCheckPoint(textClimb));
+        }
+
+        if (collision.gameObject.name == "Checkpoint Glide")
+        {
+            glide.SetActive(false);
+            textGlide.SetActive(true);
+
+            StartCoroutine(DisableCheckPoint(textGlide));
+        }
+
+        if (collision.gameObject.name == "Checkpoint Swing")
+        {
+            swing.SetActive(false);
+            textSwing.SetActive(true);
+
+            StartCoroutine(DisableCheckPoint(textSwing));
+        }
+
+        if (collision.gameObject.name == "Checkpoint Complete")
+        {
+            complete.SetActive(false);
+            textComplete.SetActive(true);
+
+            StartCoroutine(DisableCheckPoint(textComplete));
         }
     }
 
-    private IEnumerator DisableCheckPoint()
+    private IEnumerator DisableCheckPoint(GameObject Text)
     {
         yield return new WaitForSeconds(3f);
-
-        /*float fadeDuration = 1f;
-        float elapsedTime = 0f;
-
-        Color originalColor = checkpointMaterial.color;
-
-        while (elapsedTime < fadeDuration)
-        {
-            elapsedTime += Time.deltaTime;
-
-            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
-
-            Color newColor = originalColor;
-            newColor.a = alpha;
-
-            checkpointMaterial.color = newColor;
-
-            yield return null;
-        }*/
-
-        checkPoint.SetActive(false);
+        Text.SetActive(false);
     }
 }
