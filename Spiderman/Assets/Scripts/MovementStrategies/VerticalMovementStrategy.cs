@@ -12,6 +12,9 @@ public class VerticalMovementStrategy : IMovementStrategy
     public void Move(MovementContext ctx)
     {
         Rigidbody rb = ctx.Rb;
+
+
+
         Debug.Log("Player is climbing a wall");
 
         // Build a local coordinate system ON the wall surface, using its normal.

@@ -1107,6 +1107,9 @@ MonoBehaviour:
   freeze: 0
   activeGrapple: 0
   glideHeld: 0
+  wallCheck: {fileID: 1715381438}
+  wallCheckDistance: 1
+  wallCheckRadius: 0.5
   glideData: {fileID: 11400000, guid: 207421b7e6cb642469560704acace76d, type: 2}
   wallCrawlData: {fileID: 11400000, guid: c16a44194ad57654c8e219b2b9b0e1d2, type: 2}
 --- !u!120 &1396381265

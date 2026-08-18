@@ -70,9 +70,8 @@ Vector3 cachedInputDir;
 
     void Update()
     {
-        //ToDO: Decide if it will be glide input to determine whether the player is gliding
-        //ToDO: Might do state machine logic for the movement strategy basically transition with its condition
         grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        //TODO: Add case for when wall held
 
         Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
         Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
