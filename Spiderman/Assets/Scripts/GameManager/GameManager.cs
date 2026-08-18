@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        tutorial.SetActive(true);
         Time.timeScale = 0f;
     }
 
