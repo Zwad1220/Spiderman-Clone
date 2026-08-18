@@ -15,7 +15,7 @@ public class VerticalMovementStrategy : IMovementStrategy
 
 
 
-        Debug.Log("Player is climbing a wall");
+        // Debug.Log("Player is climbing a wall");
 
         // Build a local coordinate system ON the wall surface, using its normal.
         // wallUp = "vertical" as far as the wall is concerned

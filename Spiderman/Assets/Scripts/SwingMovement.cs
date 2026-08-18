@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class SwingMovement : MonoBehaviour
+public class SwingMovement : MonoBehaviour, ISwingTargetProvider
 {
     [Header("References")]
     public Transform cam;
@@ -26,14 +27,16 @@ public class SwingMovement : MonoBehaviour
     public float forwardThrustForce = 8f;
     public float extendCableSpeed = 20f;
 
-    // Events for UI communication
-    public System.Action OnSwingStarted;
-    public System.Action OnSwingStopped;
+    [Header("Targeting")]
+    [Range(0f, 1f)] public float facingCosThreshold = 0.6f; // ~53 degrees
+    public LayerMask occlusionMask; // set to whatever counts as "blocking geometry" (usually excludes the anchors themselves)
 
-    // Public properties for UI
-    public Vector3 CurrentSwingPoint => swingPoint;
-    public bool IsGrappling => pm.activeGrapple;
-    public Vector3 PlayerPosition => transform.position;
+    // ---- ISwingTargetProvider ----
+    private readonly List<SwingAnchorCandidate> visibleAnchors = new();
+    public IReadOnlyList<SwingAnchorCandidate> VisibleAnchors => visibleAnchors;
+    public Transform CurrentAnchor => visibleAnchors.Count > 0 ? visibleAnchors[0].Anchor : null;
+
+    public event System.Action OnSwingStarted;
 
     private void Awake()
     {
@@ -59,37 +62,43 @@ public class SwingMovement : MonoBehaviour
     {
         if (pm.activeGrapple) return;
 
+        visibleAnchors.Clear();
+
         Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, whatIsGrappleable);
-
-        if (hits.Length == 0)
-        {
-            predictionPoint.gameObject.SetActive(false);
-            predictionHit = default;
-            swingPoint = Vector3.zero;
-            return;
-        }
-
-        Collider closest = null;
-        float closestDist = Mathf.Infinity;
-        Vector3 closestPoint = Vector3.zero;
 
         foreach (Collider col in hits)
         {
             Vector3 point = col.ClosestPoint(transform.position);
-            float dist = Vector3.Distance(transform.position, point);
 
-            if (dist < closestDist)
+            // GATE 1: facing cone
+            Vector3 toPoint = (point - cam.position).normalized;
+            float facing = Vector3.Dot(cam.forward, toPoint);
+            if (facing < facingCosThreshold) continue;
+
+            // GATE 2: occlusion — nothing blocking between camera and point
+            float distToPoint = Vector3.Distance(cam.position, point);
+            if (Physics.Raycast(cam.position, toPoint, out RaycastHit occl, distToPoint, occlusionMask))
             {
-                closestDist = dist;
-                closest = col;
-                closestPoint = point;
+                continue; // something is in the way before we even reach the point
             }
+
+            visibleAnchors.Add(new SwingAnchorCandidate
+            {
+                Anchor = col.transform,
+                Distance = Vector3.Distance(transform.position, point)
+            });
         }
 
-        if (closest != null)
+        visibleAnchors.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+
+        if (visibleAnchors.Count > 0)
         {
+            Transform closest = visibleAnchors[0].Anchor;
+            Vector3 closestPoint = closest.GetComponent<Collider>().ClosestPoint(transform.position);
+
             predictionPoint.gameObject.SetActive(true);
             predictionPoint.position = closestPoint;
+            predictionHit = new RaycastHit();
             swingPoint = closestPoint;
         }
         else
@@ -111,10 +120,8 @@ public class SwingMovement : MonoBehaviour
         joint.connectedAnchor = swingPoint;
 
         float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
-
         joint.maxDistance = distanceFromPoint * 0.8f;
         joint.minDistance = distanceFromPoint * 0.25f;
-
         joint.spring = 4.5f;
         joint.damper = 7f;
         joint.massScale = 4.5f;
@@ -131,8 +138,6 @@ public class SwingMovement : MonoBehaviour
         pm.activeGrapple = false;
         lr.positionCount = 0;
         Destroy(joint);
-        
-        OnSwingStopped?.Invoke();
     }
 
     private Vector3 currentSwingPosition;
@@ -154,9 +159,7 @@ public class SwingMovement : MonoBehaviour
     private void DrawRope()
     {
         if (!joint) return;
-
         currentSwingPosition = Vector3.Lerp(currentSwingPosition, swingPoint, Time.deltaTime * 8f);
-
         lr.SetPosition(0, gunTip.position);
         lr.SetPosition(1, swingPoint);
     }

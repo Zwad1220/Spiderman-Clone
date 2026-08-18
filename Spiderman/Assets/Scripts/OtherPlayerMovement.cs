@@ -77,12 +77,13 @@ Vector3 cachedInputDir;
         Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
         cachedInputDir = forward * move.y + right * move.x;
 
-        Debug.Log($"grounded:{grounded} activeGrapple:{activeGrapple} touchingWall:{touchingWall} wallHeld:{wallHeld}");
+        // Debug.Log($"grounded:{grounded} activeGrapple:{activeGrapple} touchingWall:{touchingWall} wallHeld:{wallHeld}");
 
         if (activeGrapple) currentStrategy = walkStrategy;
         else if (viableWallCrawling) currentStrategy = wallCrawlStrategy;
         else if (grounded) currentStrategy = walkStrategy;
         else if (glideHeld) currentStrategy = glideStrategy;
+        else currentStrategy = walkStrategy;
 
         var ctx = new MovementContext
         {
