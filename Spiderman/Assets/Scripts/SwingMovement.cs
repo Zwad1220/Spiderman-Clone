@@ -4,7 +4,7 @@ public class SwingMovement : MonoBehaviour
 {
     [Header("References")]
     public Transform cam;
-    public Transform gunTip; // point the rope visually comes from
+    public Transform gunTip;
     public LayerMask whatIsGrappleable;
     public LineRenderer lr;
     public Rigidbody rb;
@@ -26,15 +26,20 @@ public class SwingMovement : MonoBehaviour
     public float forwardThrustForce = 8f;
     public float extendCableSpeed = 20f;
 
+    // Events for UI communication
+    public System.Action OnSwingStarted;
+    public System.Action OnSwingStopped;
+
+    // Public properties for UI
+    public Vector3 CurrentSwingPoint => swingPoint;
+    public bool IsGrappling => pm.activeGrapple;
+    public Vector3 PlayerPosition => transform.position;
 
     private void Awake()
     {
         controls = new PlayerControls();
         pm = GetComponent<OtherPlayerMovement>();
-        controls.Player.Jump.performed += ctx =>
-        {
-            
-        };
+        controls.Player.Jump.performed += ctx => { };
     }
 
     void Update()
@@ -42,7 +47,6 @@ public class SwingMovement : MonoBehaviour
         CheckForSwingPoint();
         if (Input.GetKeyDown(KeyCode.Mouse0)) StartSwing();
         if (Input.GetKeyUp(KeyCode.Mouse0)) StopSwing();
-        // Debug.Log($"activeGrapple: {pm.activeGrapple}, joint: {joint != null}");
         if (pm.activeGrapple) OdmGearMovement();
     }
 
@@ -61,10 +65,10 @@ public class SwingMovement : MonoBehaviour
         {
             predictionPoint.gameObject.SetActive(false);
             predictionHit = default;
+            swingPoint = Vector3.zero;
             return;
         }
 
-        // find the closest valid point among candidates
         Collider closest = null;
         float closestDist = Mathf.Infinity;
         Vector3 closestPoint = Vector3.zero;
@@ -86,13 +90,12 @@ public class SwingMovement : MonoBehaviour
         {
             predictionPoint.gameObject.SetActive(true);
             predictionPoint.position = closestPoint;
-
-            predictionHit = new RaycastHit(); // kept for compatibility with StartSwing() below
             swingPoint = closestPoint;
         }
         else
         {
             predictionPoint.gameObject.SetActive(false);
+            swingPoint = Vector3.zero;
         }
     }
 
@@ -118,6 +121,8 @@ public class SwingMovement : MonoBehaviour
 
         lr.positionCount = 2;
         currentSwingPosition = gunTip.position;
+
+        OnSwingStarted?.Invoke();
     }
 
     private void StopSwing()
@@ -126,19 +131,19 @@ public class SwingMovement : MonoBehaviour
         pm.activeGrapple = false;
         lr.positionCount = 0;
         Destroy(joint);
+        
+        OnSwingStopped?.Invoke();
     }
 
     private Vector3 currentSwingPosition;
 
     private void OdmGearMovement()
     {
-        
         if (Input.GetKey(KeyCode.Space) && joint.maxDistance > 0)
         {
             joint.maxDistance -= extendCableSpeed * Time.deltaTime;
             joint.minDistance -= extendCableSpeed * Time.deltaTime;
         }
-        // extend cable
         if (Input.GetKey(KeyCode.S) && joint.maxDistance < maxSwingDistance)
         {
             joint.maxDistance += extendCableSpeed * Time.deltaTime;
