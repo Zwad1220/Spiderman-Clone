@@ -8,7 +8,7 @@ public class WalkMovement : IMovementStrategy
 
     public void Move(MovementContext ctx){
         // if (!ctx.Grounded) return;
-
+        ctx.Rb.useGravity = true;
         ctx.Rb.linearDamping = ctx.Grounded ? groundDrag : 0f;
         float speed = ctx.Grounded? groundSpeed : airSpeed;
 

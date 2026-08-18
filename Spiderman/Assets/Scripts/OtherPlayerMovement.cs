@@ -1,4 +1,3 @@
-
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -18,10 +17,13 @@ public class OtherPlayerMovement : MonoBehaviour
 
     public bool freeze;
     public bool activeGrapple;
-    public bool glideHeld;  
-    public bool viableWallCrawling => touchingWall && wallHeld ;
+    public bool glideHeld;
+    public bool viableWallCrawling => wallHeld && (touchingWall || Time.time - lastWallContactTime < wallCoyoteTime);
     bool touchingWall, wallHeld;
 
+    [Header("Wall Crawl Tuning")]
+    [SerializeField] float wallCoyoteTime = 0.15f;
+    float lastWallContactTime = -999f;
 
     IMovementStrategy walkStrategy;
     IMovementStrategy glideStrategy;
@@ -35,15 +37,14 @@ public class OtherPlayerMovement : MonoBehaviour
     [SerializeField] GlideMovementDataSO glideData;
     [SerializeField] WallCrawlMovementDataSO wallCrawlData;
 
-
-
-    void Awake(){
+    void Awake()
+    {
         rb = GetComponent<Rigidbody>();
         controls = new PlayerControls();
 
         groundMask = LayerMask.GetMask("Ground", "Environment");
 
-        walkStrategy = new WalkMovement{groundDrag = groundDrag};
+        walkStrategy = new WalkMovement { groundDrag = groundDrag };
         glideStrategy = new GlideMovement(glideData);
         wallCrawlStrategy = new VerticalMovementStrategy(wallCrawlData);
         currentStrategy = walkStrategy;
@@ -58,37 +59,39 @@ public class OtherPlayerMovement : MonoBehaviour
         controls.Player.Glide.canceled += ctx => glideHeld = false;
         controls.Player.Jump.performed += ctx => wallHeld = true;
         controls.Player.Jump.canceled += ctx => wallHeld = false;
-
     }
 
-        
-    public void SetMovementStrategy(IMovementStrategy newstrategy) =>currentStrategy = newstrategy;
-    void OnEnable()=> controls.Player.Enable();
-    void OnDisable()=> controls.Player.Disable();
+    public void SetMovementStrategy(IMovementStrategy newstrategy) => currentStrategy = newstrategy;
+    void OnEnable() => controls.Player.Enable();
+    void OnDisable() => controls.Player.Disable();
 
-Vector3 cachedInputDir;
+    Vector3 cachedInputDir;
 
     void Update()
     {
+        // Input sampling and state reads only — no physics writes here.
         grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        //TODO: Add case for when wall held
 
         Vector3 forward = Vector3.ProjectOnPlane(orientation.forward, Vector3.up).normalized;
         Vector3 right = Vector3.ProjectOnPlane(orientation.right, Vector3.up).normalized;
         cachedInputDir = forward * move.y + right * move.x;
 
-        // Debug.Log($"grounded:{grounded} activeGrapple:{activeGrapple} touchingWall:{touchingWall} wallHeld:{wallHeld}");
-
+        // Debug.Log($" Viable Wall to crawl: {viableWallCrawling}");
+        
         if (activeGrapple) currentStrategy = walkStrategy;
         else if (viableWallCrawling) currentStrategy = wallCrawlStrategy;
         else if (grounded) currentStrategy = walkStrategy;
         else if (glideHeld) currentStrategy = glideStrategy;
         else currentStrategy = walkStrategy;
+    }
 
+    void FixedUpdate()
+    {
         var ctx = new MovementContext
         {
             Rb = rb,
             InputDirection = cachedInputDir,
+            RawMove = move,
             DeltaTime = Time.fixedDeltaTime,
             Grounded = grounded,
             TouchingWall = touchingWall,
@@ -121,22 +124,25 @@ Vector3 cachedInputDir;
         return velocityXZ + velocityY;
     }
 
-
-
     void OnCollisionStay(Collision collision)
     {
         if (((1 << collision.gameObject.layer) & wallMask) == 0) return;
 
+        // Debug.Log($" touching wall: {touchingWall}");
+
         touchingWall = true;
+        lastWallContactTime = Time.time;
         wallNormal = collision.GetContact(0).normal;
-        Debug.Log($"Touching Wall: {touchingWall} ");
     }
 
     void OnCollisionExit(Collision collision)
     {
         if (((1 << collision.gameObject.layer) & wallMask) == 0) return;
         touchingWall = false;
-        Debug.Log($"Touching Wall: {touchingWall} ");
-    }
 
+        // Debug.Log($" touching wall: {touchingWall}");
+        // No instant reaction needed here — viableWallCrawling now falls back
+        // on lastWallContactTime + wallCoyoteTime, so a single dropped contact
+        // doesn't yank the player out of wall-crawl.
+    }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fa57ad5aae35494dbf699e287319dcc, type: 3}
   m_Name: GlideMovementDataSO
   m_EditorClassIdentifier: 
-  glideGravityScale: 0.3
+  glideGravityScale: 0.15
   maxFallSpeed: 6
   glideRatio: 2.2
   forwardAcceleration: 8
