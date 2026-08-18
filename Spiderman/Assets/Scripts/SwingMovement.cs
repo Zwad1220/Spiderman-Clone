@@ -163,4 +163,10 @@ public class SwingMovement : MonoBehaviour, ISwingTargetProvider
         lr.SetPosition(0, gunTip.position);
         lr.SetPosition(1, swingPoint);
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
 }
